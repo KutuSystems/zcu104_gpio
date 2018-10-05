@@ -8,6 +8,8 @@ pre-built/linux/
 *.o
 *.jou
 *.log
+*.swp
 project-spec/meta-plnx-generated/
+project-spec/hw-description/
 /components/plnx_workspace
 hardware/ZCU104_GPIO/ZCU104_GPIO*

@@ -38,7 +38,7 @@ begin
    system_top_wrapper_1 : entity xil_defaultlib.system_top_wrapper
    port map
    (
-      PMOD_0_tri_io  => pmod_0,
+      PMOD_0  => pmod_0,
       PMOD_1_tri_io  => pmod_1
    );
 
