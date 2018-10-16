@@ -39,7 +39,7 @@ begin
    port map
    (
       PMOD_0  => pmod_0,
-      PMOD_1_tri_io  => pmod_1
+      PMOD_1  => pmod_1
    );
 
 end RTL;

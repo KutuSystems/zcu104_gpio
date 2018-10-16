@@ -98,11 +98,11 @@ begin
             end if;
 
             if sys_rdaddr(3 downto 2) = "00" then
-               sys_rddata(NUM_GPIO-1 downto 0) <= gpio_output;
+               sys_rddata(NUM_GPIO-1 downto 0) <= gpio_input;
             elsif sys_rdaddr(3 downto 2) = "01" then
                sys_rddata(NUM_GPIO-1 downto 0) <= gpio_tri;
             else
-               sys_rddata(NUM_GPIO-1 downto 0) <= gpio_input;
+               sys_rddata(NUM_GPIO-1 downto 0) <= gpio_output;
             end if;
 
             sys_rddata(31 downto NUM_GPIO) <= (others => '0');

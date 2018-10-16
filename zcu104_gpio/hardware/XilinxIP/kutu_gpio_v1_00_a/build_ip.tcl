@@ -1,15 +1,15 @@
 
 # Set the original project directory path for adding/importing sources in the new project
-set orig_proj_dir "../axi_gpio_v1_00_a"
+set orig_proj_dir "../kutu_gpio_v1_00_a"
 
 # Create project
-create_project -force axi_gpio_v1_00_a ../axi_gpio_v1_00_a
+create_project -force kutu_gpio_v1_00_a ../kutu_gpio_v1_00_a
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
 
 # Set project properties
-set obj [get_projects axi_gpio_v1_00_a]
+set obj [get_projects kutu_gpio_v1_00_a]
 set_property "board" "xilinx.com:zynq:zc706:1.1" $obj
 set_property "simulator_language" "Mixed" $obj
 set_property "target_language" "VHDL" $obj
@@ -22,16 +22,16 @@ if {[string equal [get_filesets sources_1] ""]} {
 # Add files to 'sources_1' fileset
 add_files -norecurse sources/axi4_lite_controller.vhd
 add_files -norecurse sources/gpio_control.vhd
-add_files -norecurse sources/axi_gpio.vhd
+add_files -norecurse sources/kutu_gpio.vhd
 
-set_property library axi_gpio_v1_00_a [get_files sources/axi4_lite_controller.vhd]
-set_property library axi_gpio_v1_00_a [get_files sources/gpio_control.vhd]
-set_property library axi_gpio_v1_00_a [get_files sources/axi_gpio.vhd]
+set_property library kutu_gpio_v1_00_a [get_files sources/axi4_lite_controller.vhd]
+set_property library kutu_gpio_v1_00_a [get_files sources/gpio_control.vhd]
+set_property library kutu_gpio_v1_00_a [get_files sources/kutu_gpio.vhd]
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
 set_property "ip_repo_paths" "../../XilinxIP" $obj
-set_property "top" "axi_gpio" $obj
+set_property "top" "kutu_gpio" $obj
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets constrs_1] ""]} {
@@ -56,7 +56,7 @@ if {[string equal [get_filesets sim_1] ""]} {
 
    # Set 'sim_1' fileset properties
    set obj [get_filesets sim_1]
-   set_property "top" "axi_gpio" $obj
+   set_property "top" "kutu_gpio" $obj
 }
 
 # Create 'synth_1' run (if not found)
@@ -71,7 +71,7 @@ if {[string equal [get_runs impl_1] ""]} {
 }
 set obj [get_runs impl_1]
 
-ipx::package_project -root_dir {../axi_gpio_v1_00_a}
+ipx::package_project -root_dir {../kutu_gpio_v1_00_a}
 set_property vendor {kutu.com.au} [ipx::current_core]
 set_property library {kutu} [ipx::current_core]
 set_property taxonomy {{/Kutu}} [ipx::current_core]
@@ -84,6 +84,6 @@ ipx::create_xgui_files [ipx::current_core]
 ipx::save_core [ipx::current_core]
 #update_ip_catalog -rebuild -repo_path ../../XilinxIP
 ipx::check_integrity -quiet [ipx::current_core]
-ipx::unload_core {kutu.com.au:kutu:axi_gpio:1.0}
+ipx::unload_core {kutu.com.au:kutu:kutu_gpio:1.0}
 
-puts "INFO: Project created:axi_gpio_v1_00_a"
+puts "INFO: Project created:kutu_gpio_v1_00_a"

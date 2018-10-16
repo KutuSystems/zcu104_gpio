@@ -18,11 +18,11 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
-library axi_gpio_v1_00_a;
-use axi_gpio_v1_00_a.axi4_lite_controller;
-use axi_gpio_v1_00_a.gpio_control;
+library kutu_msp430_v1_00_a;
+use kutu_msp430_v1_00_a.axi4_lite_controller;
+use kutu_msp430_v1_00_a.gpio_control;
 
-entity axi_gpio is
+entity kutu_msp430 is
    generic (
       C_S_AXI_DATA_WIDTH   : integer  range 32 to 32       := 32;
       C_S_AXI_ADDR_WIDTH   : integer  range 4 to 16        := 16;
@@ -59,9 +59,9 @@ entity axi_gpio is
       -- write interface to system
       gpio                 : inout std_logic_vector(NUM_GPIO-1 downto 0)
    );
-end axi_gpio;
+end kutu_msp430;
 
-architecture RTL of axi_gpio is
+architecture RTL of kutu_msp430 is
 
    signal sys_clk          : std_logic;                                         -- system clk (same as AXI clock
    signal sys_wraddr       : std_logic_vector(C_SYS_ADDR_WIDTH-1 downto 2);      -- address for reads/writes
@@ -75,7 +75,7 @@ architecture RTL of axi_gpio is
 
 begin
 
-   AXI4_LITE_CONTROLLER_1 : entity axi_gpio_v1_00_a.axi4_lite_controller
+   AXI4_LITE_CONTROLLER_1 : entity kutu_msp430_v1_00_a.axi4_lite_controller
    generic map
    (
       C_SYS_ADDR_WIDTH     => C_SYS_ADDR_WIDTH,
@@ -120,7 +120,7 @@ begin
       sys_rd_endcmd        => sys_rd_endcmd        -- input read strobe
    );
 
-   GPIO_CONTROL_1 : entity axi_gpio_v1_00_a.gpio_control
+   GPIO_CONTROL_1 : entity kutu_msp430_v1_00_a.gpio_control
    generic map (
        NUM_GPIO            => NUM_GPIO
    )
