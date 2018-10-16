@@ -1,8 +1,8 @@
 --------------------------------------------------------------
 --
--- (C) Copyright Kutu Pty. Ltd. 2014.
+-- (C) Copyright Kutu Pty. Ltd. 2018.
 --
--- file: axi4_lite_tb1.vhd
+-- file: kutu_msp430.vhd
 --
 -- author: Greg Smart
 --
@@ -31,8 +31,7 @@ entity kutu_msp430 is
       C_USE_WSTRB          : integer := 0;
       C_DPHASE_TIMEOUT     : integer range 0 to 512        := 8;
       C_BASEADDR           : std_logic_vector              := X"7000_0000";
-      C_HIGHADDR           : std_logic_vector              := X"7000_FFFF";
-      NUM_GPIO             : integer range 1 to 32         := 1
+      C_HIGHADDR           : std_logic_vector              := X"7000_FFFF"
    );
    port (
       -- AXI bus signals
@@ -57,7 +56,8 @@ entity kutu_msp430 is
       S_AXI_LITE_RREADY    : in  std_logic;
 
       -- write interface to system
-      gpio                 : inout std_logic_vector(NUM_GPIO-1 downto 0)
+      msp_nrst             : inout std_logic;
+      msp_test             : inout std_logic
    );
 end kutu_msp430;
 
@@ -121,9 +121,6 @@ begin
    );
 
    GPIO_CONTROL_1 : entity kutu_msp430_v1_00_a.gpio_control
-   generic map (
-       NUM_GPIO            => NUM_GPIO
-   )
    port map (
       resetn               => S_AXI_LITE_ARESETN,
       clk                  => sys_clk,             -- system clk (same as AXI clock
@@ -138,8 +135,9 @@ begin
       sys_rd_cmd           => sys_rd_cmd,          -- read strobe
       sys_rd_endcmd        => sys_rd_endcmd,       -- input read strobe
 
-      -- led output
-      gpio                 => gpio
+      -- output
+      msp_nrst             => msp_nrst,
+      msp_test             => msp_test
    );
 
 end RTL;

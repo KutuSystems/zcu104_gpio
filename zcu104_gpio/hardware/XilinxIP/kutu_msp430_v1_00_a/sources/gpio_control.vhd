@@ -24,9 +24,6 @@ use unisim.vcomponents.all;
 -- synopsys translate_on
 
 entity gpio_control is
-   generic (
-       NUM_GPIO            : integer range 1 to 32           := 1
-   );
    port (
       resetn               : in std_logic;
       clk                  : in std_logic;
@@ -41,13 +38,16 @@ entity gpio_control is
       sys_rd_cmd           : in std_logic;                                          -- read strobe
       sys_rd_endcmd        : out std_logic;                                         -- input read strobe
 
-      -- led output
-      gpio                 : inout std_logic_vector(NUM_GPIO-1 downto 0)
+      -- output
+      msp_nrst             : inout std_logic;
+      msp_test             : inout std_logic
    );
 end gpio_control;
 
 
 architecture RTL of gpio_control is
+
+   constant NUM_GPIO       : integer := 2;
 
    signal   gpio_output    : std_logic_vector(NUM_GPIO-1 downto 0);
    signal   gpio_input     : std_logic_vector(NUM_GPIO-1 downto 0);
@@ -68,26 +68,34 @@ begin
 
    sys_rd_endcmd  <= sys_rd_end and sys_rd_cmd;
 
-   IO_BUF_0 : for I in 0 to NUM_GPIO-1 generate
-   begin
-      tri_iobuf_0: component IOBUF
-      port map
-      (
-         I => gpio_output(I),
-         IO => gpio(I),
-         O => gpio_input(I),
-         T => gpio_tri(I)
-      );
-   end generate;
+   nrst_iobuf_0: component IOBUF
+   port map
+   (
+      I => gpio_output(0),
+      IO => msp_nrst,
+      O => gpio_input(0),
+      T => gpio_tri(0)
+   );
+
+   test_iobuf_0: component IOBUF
+   port map
+   (
+      I => gpio_output(1),
+      IO => msp_test,
+      O => gpio_input(1),
+      T => gpio_tri(1)
+   );
+
+   sys_rddata(31 downto NUM_GPIO) <= (others => '0');
 
    process (clk)
    begin
       if rising_edge(clk) then
          if resetn = '0' then
-            sys_rddata     <= X"00000000";
-            sys_rd_end     <= '0';
-            gpio_output    <= (others => '0');
-            gpio_tri       <= (others => '0');
+            sys_rddata(NUM_GPIO-1 downto 0)  <= (others => '0');
+            sys_rd_end                       <= '0';
+            gpio_output                      <= (others => '0');
+            gpio_tri                         <= (others => '1');
          else
             if sys_wr_cmd = '1' and sys_wraddr(12 downto 4) = "000000000" then
                if sys_wraddr(3 downto 2) = "00" then
@@ -105,8 +113,6 @@ begin
                sys_rddata(NUM_GPIO-1 downto 0) <= gpio_output;
             end if;
 
-            sys_rddata(31 downto NUM_GPIO) <= (others => '0');
-
             -- Control read strobe
             if sys_rd_cmd = '1' then
                sys_rd_end <= '1';
@@ -118,4 +124,4 @@ begin
       end if;
    end process;
 
- end RTL;
+end RTL;

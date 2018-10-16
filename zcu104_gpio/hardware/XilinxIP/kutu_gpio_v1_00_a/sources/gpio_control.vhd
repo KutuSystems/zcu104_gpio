@@ -80,14 +80,16 @@ begin
       );
    end generate;
 
+   sys_rddata(31 downto NUM_GPIO) <= (others => '0');
+
    process (clk)
    begin
       if rising_edge(clk) then
          if resetn = '0' then
-            sys_rddata     <= X"00000000";
-            sys_rd_end     <= '0';
-            gpio_output    <= (others => '0');
-            gpio_tri       <= (others => '0');
+            sys_rddata   (NUM_GPIO-1 downto 0)  <= (others => '0');
+            sys_rd_end                          <= '0';
+            gpio_output                         <= (others => '0');
+            gpio_tri                            <= (others => '1');
          else
             if sys_wr_cmd = '1' and sys_wraddr(12 downto 4) = "000000000" then
                if sys_wraddr(3 downto 2) = "00" then
@@ -104,8 +106,6 @@ begin
             else
                sys_rddata(NUM_GPIO-1 downto 0) <= gpio_output;
             end if;
-
-            sys_rddata(31 downto NUM_GPIO) <= (others => '0');
 
             -- Control read strobe
             if sys_rd_cmd = '1' then

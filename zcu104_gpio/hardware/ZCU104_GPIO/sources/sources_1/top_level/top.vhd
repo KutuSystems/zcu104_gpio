@@ -27,8 +27,9 @@ use xil_defaultlib.system_top_wrapper;
 
 entity top_ZCU104_GPIO is
 port (
-    pmod_0 : inout std_logic_vector(7 downto 0);
-    pmod_1 : inout std_logic_vector(7 downto 0)
+    msp_nrst   : inout std_logic;
+    msp_test   : inout std_logic;
+    pmod_1     : inout std_logic_vector(7 downto 0)
 );
 end top_ZCU104_GPIO;
 
@@ -38,7 +39,8 @@ begin
    system_top_wrapper_1 : entity xil_defaultlib.system_top_wrapper
    port map
    (
-      PMOD_0  => pmod_0,
+      msp_nrst => msp_nrst,
+      msp_test => msp_test,
       PMOD_1  => pmod_1
    );
 

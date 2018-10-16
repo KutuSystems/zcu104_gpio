@@ -2,14 +2,20 @@
 
 # PMOD I/O's
 set_property IOSTANDARD LVCMOS33 [get_ports pmod*]
-set_property PACKAGE_PIN G8  [get_ports {pmod_0[0]}]
-set_property PACKAGE_PIN H8  [get_ports {pmod_0[1]}]
-set_property PACKAGE_PIN G7  [get_ports {pmod_0[2]}]
-set_property PACKAGE_PIN H7  [get_ports {pmod_0[3]}]
-set_property PACKAGE_PIN G6  [get_ports {pmod_0[4]}]
-set_property PACKAGE_PIN H6  [get_ports {pmod_0[5]}]
-set_property PACKAGE_PIN J6  [get_ports {pmod_0[6]}]
-set_property PACKAGE_PIN J7  [get_ports {pmod_0[7]}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports msp_nrst]
+set_property PACKAGE_PIN H8  [get_ports msp_nrst]
+set_property IOSTANDARD LVCMOS33 [get_ports msp_test]
+set_property PACKAGE_PIN G7  [get_ports msp_test]
+
+#set_property PACKAGE_PIN G8  [get_ports {pmod_0[0]}]
+#set_property PACKAGE_PIN H8  [get_ports {pmod_0[1]}]
+#set_property PACKAGE_PIN G7  [get_ports {pmod_0[2]}]
+#set_property PACKAGE_PIN H7  [get_ports {pmod_0[3]}]
+#set_property PACKAGE_PIN G6  [get_ports {pmod_0[4]}]
+#set_property PACKAGE_PIN H6  [get_ports {pmod_0[5]}]
+#set_property PACKAGE_PIN J6  [get_ports {pmod_0[6]}]
+#set_property PACKAGE_PIN J7  [get_ports {pmod_0[7]}]
 
 set_property PACKAGE_PIN J9  [get_ports {pmod_1[0]}]
 set_property PACKAGE_PIN K9  [get_ports {pmod_1[1]}]
