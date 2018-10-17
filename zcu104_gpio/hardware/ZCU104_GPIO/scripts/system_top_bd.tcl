@@ -187,11 +187,15 @@ proc create_root_design { parentCell } {
   # Create instance: kutu_gpio_1, and set properties
   set kutu_gpio_1 [ create_bd_cell -type ip -vlnv kutu.com.au:kutu:kutu_gpio:1.0 kutu_gpio_1 ]
   set_property -dict [ list \
+   CONFIG.C_SYS_ADDR_WIDTH {12} \
    CONFIG.NUM_GPIO {8} \
  ] $kutu_gpio_1
 
   # Create instance: kutu_msp430_0, and set properties
   set kutu_msp430_0 [ create_bd_cell -type ip -vlnv kutu.com.au:kutu:kutu_msp430:1.0 kutu_msp430_0 ]
+  set_property -dict [ list \
+   CONFIG.C_SYS_ADDR_WIDTH {12} \
+ ] $kutu_msp430_0
 
   # Create instance: ps8_0_axi_periph, and set properties
   set ps8_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps8_0_axi_periph ]
@@ -767,8 +771,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins rst_ps8_0_100M/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
 
   # Create address segments
-  create_bd_addr_seg -range 0x00001000 -offset 0x000400001000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs kutu_gpio_1/S_AXI_LITE/reg0] SEG_kutu_gpio_1_reg0
-  create_bd_addr_seg -range 0x00001000 -offset 0x000400000000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs kutu_msp430_0/S_AXI_LITE/reg0] SEG_kutu_msp430_0_reg0
+  create_bd_addr_seg -range 0x00010000 -offset 0x000400010000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs kutu_gpio_1/S_AXI_LITE/reg0] SEG_kutu_gpio_1_reg0
+  create_bd_addr_seg -range 0x00010000 -offset 0x000400000000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs kutu_msp430_0/S_AXI_LITE/reg0] SEG_kutu_msp430_0_reg0
 
 
   # Restore current instance
