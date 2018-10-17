@@ -121,6 +121,10 @@ begin
    );
 
    GPIO_CONTROL_1 : entity kutu_msp430_v1_00_a.gpio_control
+   generic map
+   (
+      C_SYS_ADDR_WIDTH     => C_SYS_ADDR_WIDTH
+   )
    port map (
       resetn               => S_AXI_LITE_ARESETN,
       clk                  => sys_clk,             -- system clk (same as AXI clock

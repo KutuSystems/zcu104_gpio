@@ -25,18 +25,19 @@ use unisim.vcomponents.all;
 
 entity gpio_control is
    generic (
-       NUM_GPIO            : integer range 1 to 32           := 1
+      C_SYS_ADDR_WIDTH     : integer  range 8 to 24        := 13;
+      NUM_GPIO            : integer range 1 to 32           := 1
    );
    port (
       resetn               : in std_logic;
       clk                  : in std_logic;
 
       -- write interface from system
-      sys_wraddr           : in std_logic_vector(12 downto 2);                      -- address for reads/writes
+      sys_wraddr           : in std_logic_vector(C_SYS_ADDR_WIDTH-1 downto 2);                      -- address for reads/writes
       sys_wrdata           : in std_logic_vector(31 downto 0);                      -- data/no. bytes
       sys_wr_cmd           : in std_logic;                                          -- write strobe
 
-      sys_rdaddr           : in std_logic_vector(12 downto 2);                      -- address for reads/writes
+      sys_rdaddr           : in std_logic_vector(C_SYS_ADDR_WIDTH-1 downto 2);                      -- address for reads/writes
       sys_rddata           : out std_logic_vector(31 downto 0);                     -- input data port for read operation
       sys_rd_cmd           : in std_logic;                                          -- read strobe
       sys_rd_endcmd        : out std_logic;                                         -- input read strobe
@@ -48,6 +49,8 @@ end gpio_control;
 
 
 architecture RTL of gpio_control is
+
+   constant ZERO_VECTOR    : std_logic_vector(31 downto 0) := X"00000000";
 
    signal   gpio_output    : std_logic_vector(NUM_GPIO-1 downto 0);
    signal   gpio_input     : std_logic_vector(NUM_GPIO-1 downto 0);
@@ -91,7 +94,7 @@ begin
             gpio_output                         <= (others => '0');
             gpio_tri                            <= (others => '1');
          else
-            if sys_wr_cmd = '1' and sys_wraddr(12 downto 4) = "000000000" then
+            if sys_wr_cmd = '1' and sys_wraddr(C_SYS_ADDR_WIDTH-1 downto 4) = ZERO_VECTOR(C_SYS_ADDR_WIDTH-1 downto 4) then
                if sys_wraddr(3 downto 2) = "00" then
                   gpio_output <= sys_wrdata(NUM_GPIO-1 downto 0);
                elsif sys_wraddr(3 downto 2) = "01" then

@@ -122,7 +122,8 @@ begin
 
    GPIO_CONTROL_1 : entity kutu_gpio_v1_00_a.gpio_control
    generic map (
-       NUM_GPIO            => NUM_GPIO
+      C_SYS_ADDR_WIDTH     => C_SYS_ADDR_WIDTH,
+      NUM_GPIO            => NUM_GPIO
    )
    port map (
       resetn               => S_AXI_LITE_ARESETN,
