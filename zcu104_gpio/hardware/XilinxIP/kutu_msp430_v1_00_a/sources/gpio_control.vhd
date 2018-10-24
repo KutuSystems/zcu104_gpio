@@ -43,7 +43,13 @@ entity gpio_control is
 
       -- output
       msp_nrst             : inout std_logic;
-      msp_test             : inout std_logic
+      msp_test             : inout std_logic;
+
+      -- interrupt
+      msp_interrupt        : out std_logic;
+
+      -- debug leds
+      debug_led            : out std_logic_vector(3 downto 0)
    );
 end gpio_control;
 
@@ -69,6 +75,8 @@ architecture RTL of gpio_control is
    end component;
 
 begin
+
+   debug_led      <= gpio_output & gpio_input;
 
    sys_rd_endcmd  <= sys_rd_end and sys_rd_cmd;
 
@@ -100,13 +108,21 @@ begin
             sys_rd_end                       <= '0';
             gpio_output                      <= (others => '0');
             gpio_tri                         <= (others => '1');
+            msp_interrupt                    <= '0';
          else
             if sys_wr_cmd = '1' and sys_wraddr(C_SYS_ADDR_WIDTH-1 downto 4) = ZERO_VECTOR(C_SYS_ADDR_WIDTH-1 downto 4) then
                if sys_wraddr(3 downto 2) = "00" then
                   gpio_output <= sys_wrdata(NUM_GPIO-1 downto 0);
-               elsif sys_wraddr(3 downto 2) = "01" then
+               end if;
+
+               if sys_wraddr(3 downto 2) = "01" then
                   gpio_tri    <= sys_wrdata(NUM_GPIO-1 downto 0);
                end if;
+
+               if sys_wraddr(3 downto 2) = "11" then
+                  msp_interrupt <= sys_wrdata(0);
+               end if;
+
             end if;
 
             if sys_rdaddr(3 downto 2) = "00" then

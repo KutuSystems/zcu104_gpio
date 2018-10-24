@@ -114,6 +114,8 @@ if { $bCheckIPs == 1 } {
 kutu.com.au:kutu:kutu_gpio:1.0\
 kutu.com.au:kutu:kutu_msp430:1.0\
 xilinx.com:ip:proc_sys_reset:5.0\
+xilinx.com:ip:xlconcat:2.1\
+xilinx.com:ip:xlconstant:1.1\
 xilinx.com:ip:zynq_ultra_ps_e:3.2\
 "
 
@@ -181,6 +183,7 @@ proc create_root_design { parentCell } {
 
   # Create ports
   set PMOD_1 [ create_bd_port -dir IO -from 7 -to 0 PMOD_1 ]
+  set msp430_debug_led [ create_bd_port -dir O -from 3 -to 0 msp430_debug_led ]
   set msp_nrst [ create_bd_port -dir IO msp_nrst ]
   set msp_test [ create_bd_port -dir IO msp_test ]
 
@@ -205,6 +208,18 @@ proc create_root_design { parentCell } {
 
   # Create instance: rst_ps8_0_100M, and set properties
   set rst_ps8_0_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps8_0_100M ]
+
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set_property -dict [ list \
+   CONFIG.NUM_PORTS {8} \
+ ] $xlconcat_0
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+  set_property -dict [ list \
+   CONFIG.CONST_VAL {0} \
+ ] $xlconstant_0
 
   # Create instance: zynq_ultra_ps_e_0, and set properties
   set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.2 zynq_ultra_ps_e_0 ]
@@ -739,7 +754,7 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__USB3_0__PERIPHERAL__ENABLE {1} \
    CONFIG.PSU__USB3_0__PERIPHERAL__IO {GT Lane2} \
    CONFIG.PSU__USE__FABRIC__RST {1} \
-   CONFIG.PSU__USE__IRQ0 {0} \
+   CONFIG.PSU__USE__IRQ0 {1} \
    CONFIG.PSU__USE__M_AXI_GP0 {1} \
    CONFIG.PSU__USE__M_AXI_GP1 {0} \
    CONFIG.PSU__USE__M_AXI_GP2 {0} \
@@ -765,8 +780,12 @@ proc create_root_design { parentCell } {
   connect_bd_net -net Net1 [get_bd_ports PMOD_1] [get_bd_pins kutu_gpio_1/gpio]
   connect_bd_net -net Net2 [get_bd_ports msp_nrst] [get_bd_pins kutu_msp430_0/msp_nrst]
   connect_bd_net -net Net3 [get_bd_ports msp_test] [get_bd_pins kutu_msp430_0/msp_test]
+  connect_bd_net -net kutu_msp430_0_debug_led [get_bd_ports msp430_debug_led] [get_bd_pins kutu_msp430_0/debug_led]
+  connect_bd_net -net kutu_msp430_0_msp_interrupt [get_bd_pins kutu_msp430_0/msp_interrupt] [get_bd_pins xlconcat_0/In7]
   connect_bd_net -net rst_ps8_0_100M_interconnect_aresetn [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins rst_ps8_0_100M/interconnect_aresetn]
   connect_bd_net -net rst_ps8_0_100M_peripheral_aresetn [get_bd_pins kutu_gpio_1/S_AXI_LITE_ARESETN] [get_bd_pins kutu_msp430_0/S_AXI_LITE_ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps8_0_100M/peripheral_aresetn]
+  connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconcat_0/In0] [get_bd_pins xlconcat_0/In1] [get_bd_pins xlconcat_0/In2] [get_bd_pins xlconcat_0/In3] [get_bd_pins xlconcat_0/In4] [get_bd_pins xlconcat_0/In5] [get_bd_pins xlconcat_0/In6] [get_bd_pins xlconstant_0/dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins kutu_gpio_1/S_AXI_LITE_ACLK] [get_bd_pins kutu_msp430_0/S_AXI_LITE_ACLK] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_100M/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins rst_ps8_0_100M/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
 

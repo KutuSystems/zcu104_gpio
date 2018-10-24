@@ -29,6 +29,7 @@ entity top_ZCU104_GPIO is
 port (
     msp_nrst   : inout std_logic;
     msp_test   : inout std_logic;
+    gpio_led   : out   std_logic_vector(3 downto 0);
     pmod_1     : inout std_logic_vector(7 downto 0)
 );
 end top_ZCU104_GPIO;
@@ -41,6 +42,7 @@ begin
    (
       msp_nrst => msp_nrst,
       msp_test => msp_test,
+      msp430_debug_led => gpio_led,
       PMOD_1  => pmod_1
    );
 

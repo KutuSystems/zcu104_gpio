@@ -2,11 +2,16 @@
 
 # PMOD I/O's
 set_property IOSTANDARD LVCMOS33 [get_ports pmod*]
-
 set_property IOSTANDARD LVCMOS33 [get_ports msp_nrst]
 set_property PACKAGE_PIN H8  [get_ports msp_nrst]
 set_property IOSTANDARD LVCMOS33 [get_ports msp_test]
 set_property PACKAGE_PIN G7  [get_ports msp_test]
+
+set_property IOSTANDARD LVCMOS33 [get_ports gpio_led*]
+set_property PACKAGE_PIN D5  [get_ports {gpio_led[0]}]
+set_property PACKAGE_PIN D6  [get_ports {gpio_led[1]}]
+set_property PACKAGE_PIN A5  [get_ports {gpio_led[2]}]
+set_property PACKAGE_PIN B5  [get_ports {gpio_led[3]}]
 
 #set_property PACKAGE_PIN G8  [get_ports {pmod_0[0]}]
 #set_property PACKAGE_PIN H8  [get_ports {pmod_0[1]}]

@@ -57,7 +57,13 @@ entity kutu_msp430 is
 
       -- write interface to system
       msp_nrst             : inout std_logic;
-      msp_test             : inout std_logic
+      msp_test             : inout std_logic;
+
+      -- interrupt
+      msp_interrupt        : out std_logic;
+
+      -- debug leds
+      debug_led            : out std_logic_vector(3 downto 0)
    );
 end kutu_msp430;
 
@@ -141,7 +147,13 @@ begin
 
       -- output
       msp_nrst             => msp_nrst,
-      msp_test             => msp_test
+      msp_test             => msp_test,
+
+      -- interrupt
+      msp_interrupt        => msp_interrupt,
+
+      -- debug leds
+      debug_led            => debug_led
    );
 
 end RTL;
