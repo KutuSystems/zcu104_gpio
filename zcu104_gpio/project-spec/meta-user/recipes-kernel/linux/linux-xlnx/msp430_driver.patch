@@ -3,9 +3,9 @@ index c28dca0..3f07612 100644
 --- a/drivers/char/Kconfig
 +++ b/drivers/char/Kconfig
 @@ -378,6 +378,13 @@ config XILINX_HWICAP
-
+ 
  	  If unsure, say N.
-
+ 
 +config MSP430_SBW
 +	tristate "MSP430 SBW support"
 +	depends on HAS_IOMEM
@@ -18,7 +18,7 @@ index c28dca0..3f07612 100644
  	depends on TTY
 @@ -589,4 +596,3 @@ config TILE_SROM
  source "drivers/char/xillybus/Kconfig"
-
+ 
  endmenu
 -
 diff --git a/drivers/char/MSP430_SBW/MSP430-SBW-system.h b/drivers/char/MSP430_SBW/MSP430-SBW-system.h
@@ -181,10 +181,10 @@ index 0000000..bcbb2aa
 +#endif /* _MSP430_SBW_SYSTEM_H */
 diff --git a/drivers/char/MSP430_SBW/MSP430-SBW.c b/drivers/char/MSP430_SBW/MSP430-SBW.c
 new file mode 100644
-index 0000000..1f5cb61
+index 0000000..7239985
 --- /dev/null
 +++ b/drivers/char/MSP430_SBW/MSP430-SBW.c
-@@ -0,0 +1,345 @@
+@@ -0,0 +1,330 @@
 +/*
 + * Wrapper Driver used to control a two-channel Xilinx DMA Engine
 + */
@@ -238,9 +238,6 @@ index 0000000..1f5cb61
 +   struct MSP430_SBW_drvdata *MSP430_SBW;
 +
 +   MSP430_SBW = container_of(i->i_cdev, struct MSP430_SBW_drvdata, cdev);
-+
-+//   MSP430_SBW_write_reg(MSP430_SBW, R_INTERRUPT_ADDR, K_DISABLE_INTERRUPT);
-+//   MSP430_SBW_write_reg(MSP430_SBW, R_MODE_CONFIG_ADDR, MODE_PPS_DEBUG);
 +
 +//   printk(KERN_DEBUG "<%s> file: close()\n", MODULE_NAME);
 +   return 0;
@@ -440,18 +437,6 @@ index 0000000..1f5cb61
 +   MSP430_SBW->is_open = 0;
 +   dev_info(&pdev->dev, "ioremap %pa to %p\n", &mem->start, MSP430_SBW->base);
 +
-+   MSP430_SBW->clk = devm_clk_get(&pdev->dev, NULL);
-+   if (IS_ERR(MSP430_SBW->clk)) {
-+      ret = PTR_ERR(MSP430_SBW->clk);
-+      goto failed5;
-+   }
-+   dev_info(&pdev->dev, "Successfully got device clock\n");
-+   dev_info(&pdev->dev, "device clock rate is %ld\n", clk_get_rate(MSP430_SBW->clk));
-+
-+   //
-+   // reset MSP430_SBW device
-+   //
-+
 +   ret = alloc_chrdev_region(&devt, 0, MSP430_SBW_DEVICES, DRIVER_NAME);
 +   if (ret < 0)
 +      goto failed5;
@@ -530,7 +515,6 @@ index 0000000..1f5cb61
 +
 +MODULE_AUTHOR("Universal Biosensors Pty Ltd");
 +MODULE_DESCRIPTION("MSP430 SBW Linux driver");
-+MODULE_LICENSE("GPL v2");
 diff --git a/drivers/char/MSP430_SBW/MSP430-SBW.h b/drivers/char/MSP430_SBW/MSP430-SBW.h
 new file mode 100644
 index 0000000..61216c1

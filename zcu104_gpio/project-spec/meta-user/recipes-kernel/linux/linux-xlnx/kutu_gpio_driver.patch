@@ -1,8 +1,8 @@
 diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index 3f07612..5b4d07f 100644
+index c28dca0..d1c489a 100644
 --- a/drivers/char/Kconfig
 +++ b/drivers/char/Kconfig
-@@ -398,6 +398,13 @@ config R3964
+@@ -391,6 +391,13 @@ config R3964
  
  	  If unsure, say N.
  
@@ -17,10 +17,10 @@ index 3f07612..5b4d07f 100644
  	tristate "Applicom intelligent fieldbus card support"
  	depends on PCI
 diff --git a/drivers/char/Makefile b/drivers/char/Makefile
-index 147e820..9094b9f 100644
+index 7dc3abe..3c4f690 100644
 --- a/drivers/char/Makefile
 +++ b/drivers/char/Makefile
-@@ -37,6 +37,7 @@ endif
+@@ -36,6 +36,7 @@ endif
  obj-$(CONFIG_TOSHIBA)		+= toshiba.o
  obj-$(CONFIG_DS1620)		+= ds1620.o
  obj-$(CONFIG_HW_RANDOM)		+= hw_random/
@@ -189,10 +189,10 @@ index 0000000..4d14a6c
 +#endif /* _KUTU_GPIO_SYSTEM_H */
 diff --git a/drivers/char/kutu_gpio/kutu-gpio.c b/drivers/char/kutu_gpio/kutu-gpio.c
 new file mode 100644
-index 0000000..25d2ac8
+index 0000000..835a0c7
 --- /dev/null
 +++ b/drivers/char/kutu_gpio/kutu-gpio.c
-@@ -0,0 +1,296 @@
+@@ -0,0 +1,273 @@
 +/*
 + * Wrapper Driver used to control a two-channel Xilinx DMA Engine
 + */
@@ -381,34 +381,11 @@ index 0000000..25d2ac8
 +
 +   dev_info(&pdev->dev, "KUTU_GPIO finished call to platform get resource\n");
 +
-+   dev_info(&pdev->dev, "KUTU_GPIO trying to allocate irq\n");
-+
-+   KUTU_GPIO->irq = platform_get_irq(pdev, 0);
-+   ret = devm_request_irq(&pdev->dev, KUTU_GPIO->irq, &KUTU_GPIO_isr, 0, dev_name(&pdev->dev), KUTU_GPIO);
-+   if (ret) {
-+      dev_err(&pdev->dev, "No IRQ available");
-+      return ret;
-+   }
-+
-+   dev_info(&pdev->dev, "KUTU_GPIO successfully setup irq\n");
-+
 +   platform_set_drvdata(pdev, KUTU_GPIO);
 +   spin_lock_init(&KUTU_GPIO->lock);
 +
 +   KUTU_GPIO->is_open = 0;
 +   dev_info(&pdev->dev, "ioremap %pa to %p\n", &mem->start, KUTU_GPIO->base);
-+
-+   KUTU_GPIO->clk = devm_clk_get(&pdev->dev, NULL);
-+   if (IS_ERR(KUTU_GPIO->clk)) {
-+      ret = PTR_ERR(KUTU_GPIO->clk);
-+      goto failed5;
-+   }
-+   dev_info(&pdev->dev, "Successfully got device clock\n");
-+   dev_info(&pdev->dev, "device clock rate is %ld\n", clk_get_rate(KUTU_GPIO->clk));
-+
-+   //
-+   // reset KUTU_GPIO device
-+   //
 +
 +   ret = alloc_chrdev_region(&devt, 0, KUTU_GPIO_DEVICES, DRIVER_NAME);
 +   if (ret < 0)
